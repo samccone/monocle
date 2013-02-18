@@ -10,7 +10,9 @@
     "readdirp": "~0.2.3",
     "underscore": "~1.4.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "1.8.1"
+  },
   "scripts": {
     "test": "mocha test"
   },
