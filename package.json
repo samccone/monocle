@@ -1,0 +1,26 @@
+{
+  "name": "monocle",
+  "version": "0.1.0",
+  "description": "a tool for watching directories for file changes",
+  "main": "monocle.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "readdirp": "~0.2.3",
+    "underscore": "~1.4.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": "",
+  "keywords": [
+    "watch",
+    "filesystem",
+    "folders",
+    "fs"
+  ],
+  "author": "Sam Saccone",
+  "license": "BSD"
+}
