@@ -1,3 +1,7 @@
++[![Build
+   13
++Status](https://secure.travis-ci.org/samccone/monocle.png)](http://travis-ci.org/samccone/monocle)
+
 **Monocle -- a tool for watching things**
 
 `npm install monocle`
