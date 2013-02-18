@@ -1,6 +1,6 @@
-[![Build Status](https://secure.travis-ci.org/samccone/monocle.png)](http://travis-ci.org/samccone/monocle)
+[![Build Status](https://travis-ci.org/samccone/monocle.png?branch=master)](https://travis-ci.org/samccone/monocle)
 
-**Monocle -- a tool for watching things**
+## Monocle -- a tool for watching things**
 
 `npm install monocle`
 
@@ -9,7 +9,7 @@
 `
 
 
-## Filters
+# Filters
 
 There are three different ways to specify filters for files and directories respectively.
 
