@@ -2,77 +2,76 @@ var fs      = require('fs');
 var assert  = require('assert');
 var Monocle = require('../monocle');
 
-describe("file changes", function() {
+// 
+// setup
+// 
+var monocle = null;
+var sample_dir = __dirname + '/sample_files';
+before(function(){ monocle = new Monocle(); });
 
-  var monocle = null;
-  before(function(){ monocle = new Monocle(); });
+// 
+// file change tests
+// 
+
+describe("file changes", function() {
 
   it("should detect a change", function(complete) {
     monocle.watchDirectory({
-      root: __dirname + '/sample_files',
-      callback: function(d) {
-        if (d.name == "foo.txt") {
-          monocle.unwatchAll();
-          complete();
-        }
-      },
-      complete: function() {
-        fs.writeFile(__dirname + "/sample_files/foo.txt", (new Date).getTime() + "\n");
-      }
+      root: sample_dir,
+      callback: function(f){ cb_helper('foo.txt', f, complete); },
+      complete: function(){ complete_helper("/sample_files/foo.txt"); }
     });
   });
 
   it("should detect a change in a nested dir file", function(complete) {
     monocle.watchDirectory({
-      root: __dirname + '/sample_files',
-      callback: function(d) {
-        if (d.name == "servent.txt") {
-          monocle.unwatchAll();
-          complete();
-        }
-      },
-      complete: function() {
-        fs.writeFile(__dirname + "/sample_files/nestedDir/servent.txt", (new Date).getTime() + "\n");
-      }
+      root: sample_dir,
+      callback: function(f) { cb_helper('servent.txt', f, complete); },
+      complete: function() { complete_helper("/sample_files/nestedDir/servent.txt"); }
     });
   });
 
   it("should detect a change", function(complete) {
     monocle.watchDirectory({
-      root: __dirname + '/sample_files',
-      callback: function(d) {
-        if (d.name == "longbow.js") {
-          monocle.unwatchAll();
-          complete();
-        }
-      },
-      complete: function() {
-        fs.writeFile(__dirname + "/sample_files/longbow.js", (new Date).getTime() + "\n");
-      }
+      root: sample_dir,
+      callback: function(f) { cb_helper('longbow.js', f, complete); },
+      complete: function() { complete_helper('/sample_files/longbow.js'); }
     });
   });
+
 });
 
+// 
+// file add tests
+// 
 
 describe("file added", function() {
 
-  var monocle = null;
-  before(function(){ monocle = new Monocle(); });
-
   it("should detect a file added", function(complete) {
     monocle.watchDirectory({
-      root: __dirname + '/sample_files',
+      root: sample_dir,
       directoryFilter: ['!nestedDir'],
-      callback: function(d) {
-        if (d.name == "creation.txt") {
+      callback: function(f) {
+        if (f.name == "creation.txt") {
           fs.unlinkSync(__dirname+"/sample_files/creation.txt");
           monocle.unwatchAll();
           complete();
         }
       },
-      complete: function() {
-        fs.writeFile(__dirname + "/sample_files/creation.txt", (new Date).getTime() + "\n");
-      }
+      complete: function() { complete_helper('/sample_files/creation.txt'); }
     });
   });
+  
 });
+
+// 
+// helpers
+// 
+
+function cb_helper(name, file, done){
+  if (file.name === name) { monocle.unwatchAll(); done(); }
+}
+
+function complete_helper(path){
+  fs.writeFile(__dirname + path, (new Date).getTime() + "\n");
+}
