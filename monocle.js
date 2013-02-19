@@ -1,6 +1,7 @@
-var fs        = require('fs');
-var readdirp  = require('readdirp');
-var _         = require('underscore');
+var fs          = require('fs');
+var readdirp    = require('readdirp');
+var _           = require('underscore');
+var is_windows  = process.platform === 'win32';
 
 module.exports = function() {
   var watched_files       = {};
@@ -22,9 +23,15 @@ module.exports = function() {
   }
 
   function unwatchAll() {
-    _.each(watched_files, function(val, key) {
-      val.close();
-    });
+    if (is_windows) {
+      _.each(watched_files, function(val, key) {
+        val.close();
+      });
+    } else {
+      _.each(watched_files, function(val, key) {
+        fs.unwatchFile(key);
+      });
+    }
 
     watched_files       = {};
     watched_directories = {};
@@ -48,13 +55,24 @@ module.exports = function() {
   function watchFile(file, cb, partial) {
     storeDirectory(file);
     if (!watched_files[file.fullPath]) {
-      (function() {
-        var name = file;
-        watched_files[file.fullPath] = fs.watch(file.fullPath, function() {
-          cb(name);
-        });
-        partial && cb(name);
-      })();
+      if (is_windows) {
+        (function() {
+          var name = file;
+          watched_files[file.fullPath] = fs.watch(file.fullPath, function() {
+            cb(name);
+          });
+          partial && cb(name);
+        })();
+      } else {
+        (function() {
+          var name = file;
+          watched_files[file.fullPath] = true;
+          fs.watchFile(file.fullPath, {interval: 150}, function() {
+            cb(name);
+          });
+          partial && cb(name);
+        })();
+      }
     }
   }
 
