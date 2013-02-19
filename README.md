@@ -2,6 +2,8 @@
 
 ## Monocle -- a tool for watching things
 
+[![logo](https://raw.github.com/samccone/monocle/master/logo.png)](https://raw.github.com/samccone/monocle/master/logo.png)
+
 Have you ever wanted to watch a folder and all of its files/nested folders for changes. well now you can!
 
 `npm install monocle`
