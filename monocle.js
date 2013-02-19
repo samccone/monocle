@@ -8,18 +8,26 @@ module.exports = function() {
   var watched_directories = {};
   var check_dir_pause     = 1000;
 
+  // @api public
   // Watches the directory passed and its contained files
-  function watchDirectory(dir, cb, complete, fileFilers, directoryFilters, partial) {
-    fileFilers = fileFilers || '';
+  // accepts args as an object.
 
-    readdirp({ root: dir, fileFiler: fileFilers, directoryFilter: directoryFilters }, function(err, res) {
+  // @param root(string): the root directory to watch
+  // @param fileFilter(array): ignore these files
+  // @param directoryFilter(array): ignore these files
+  // @param callback(fn): ???
+  // @param complete(fn): ???
+  // @param partial(fn): ???
+
+  function watchDirectory(args) {
+    readdirp({ root: args.root, fileFiler: args.fileFilter, directoryFilter: args.directoryFilter }, function(err, res) {
       res.files.forEach(function(file) {
-        watchFile(file, cb, partial);
+        watchFile(file, args.callback, args.partial);
       });
-      typeof complete == "function" && complete();
+      typeof args.complete == "function" && args.complete();
     });
 
-    setInterval(function() {checkDirectory(cb, fileFilers, directoryFilters)}, check_dir_pause);
+    setInterval(function() {checkDirectory(args.callback, args.fileFilters, args.directoryFilter)}, check_dir_pause);
   }
 
   function unwatchAll() {
@@ -38,13 +46,13 @@ module.exports = function() {
   }
 
   // Checks to see if something in the directory has changed
-  function checkDirectory(cb, fileFilers, directoryFilters) {
+  function checkDirectory(cb, fileFilters, directoryFilters) {
     _.each(watched_directories, function(lastModified, path) {
       fs.stat(path, function(err, stats) {
         var stats_stamp = (new Date(stats.mtime)).getTime();
         if (stats_stamp != lastModified) {
           watched_directories[path] = stats_stamp;
-          watchDirectory(path, cb, undefined, fileFilers, directoryFilters, true);
+          watchDirectory(path, cb, undefined, fileFilters, directoryFilters, true);
         }
       });
     });
