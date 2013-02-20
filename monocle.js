@@ -7,7 +7,7 @@ module.exports = function() {
   var watched_files       = {};
   var watched_directories = {};
   var check_dir_pause     = 1000;
-
+  var checkInterval       = undefined;
   // @api public
   // Watches the directory passed and its contained files
   // accepts args as an object.
@@ -15,9 +15,9 @@ module.exports = function() {
   // @param root(string): the root directory to watch
   // @param fileFilter(array): ignore these files
   // @param directoryFilter(array): ignore these files
-  // @param callback(fn): ???
-  // @param complete(fn): ???
-  // @param partial(fn): ???
+  // @param callback(fn(file)): on file change even this will be called
+  // @param complete(fn): on complete of file watching setup
+  // @param partial(boolean): if this is true it will only new filers
 
   function watchDirectory(args) {
     readdirp({ root: args.root, fileFiler: args.fileFilter, directoryFilter: args.directoryFilter }, function(err, res) {
@@ -27,7 +27,7 @@ module.exports = function() {
       typeof args.complete == "function" && args.complete();
     });
 
-    setInterval(function() {checkDirectory(args.callback, args.fileFilters, args.directoryFilter)}, check_dir_pause);
+    !args.partial && (checkInterval = setInterval(function() {checkDirectory(args)}, check_dir_pause));
   }
 
   function unwatchAll() {
@@ -41,18 +41,25 @@ module.exports = function() {
       });
     }
 
+    clearInterval(checkInterval);
     watched_files       = {};
     watched_directories = {};
   }
 
   // Checks to see if something in the directory has changed
-  function checkDirectory(cb, fileFilters, directoryFilters) {
+  function checkDirectory(args) {
     _.each(watched_directories, function(lastModified, path) {
       fs.stat(path, function(err, stats) {
         var stats_stamp = (new Date(stats.mtime)).getTime();
         if (stats_stamp != lastModified) {
           watched_directories[path] = stats_stamp;
-          watchDirectory(path, cb, undefined, fileFilters, directoryFilters, true);
+          watchDirectory({
+            root: path,
+            callback: args.callback,
+            fileFilter: args.fileFilter,
+            directoryFilter: args.directoryFilter,
+            partial: true
+          });
         }
       });
     });
@@ -65,20 +72,20 @@ module.exports = function() {
     if (!watched_files[file.fullPath]) {
       if (is_windows) {
         (function() {
-          var name = file;
-          watched_files[file.fullPath] = fs.watch(file.fullPath, function() {
-            cb(name);
+          var _file = file;
+          watched_files[_file.fullPath] = fs.watch(_file.fullPath, function() {
+            cb(_file);
           });
-          partial && cb(name);
+          partial && cb(_file);
         })();
       } else {
         (function() {
-          var name = file;
-          watched_files[file.fullPath] = true;
-          fs.watchFile(file.fullPath, {interval: 150}, function() {
-            cb(name);
+          var _file = file;
+          watched_files[_file.fullPath] = true;
+          fs.watchFile(_file.fullPath, {interval: 150}, function() {
+            cb(_file);
           });
-          partial && cb(name);
+          partial && cb(_file);
         })();
       }
     }

@@ -1,6 +1,6 @@
 {
   "name": "monocle",
-  "version": "0.1.15",
+  "version": "0.1.2",
   "description": "a tool for watching directories for file changes",
   "main": "monocle.js",
   "directories": {
@@ -14,7 +14,7 @@
     "mocha": "1.8.1"
   },
   "scripts": {
-    "test": "mocha test -R spec"
+    "test": "mocha test -R spec -t 2000"
   },
   "repository": "",
   "keywords": [

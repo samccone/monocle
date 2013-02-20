@@ -2,16 +2,20 @@ var fs      = require('fs');
 var assert  = require('assert');
 var Monocle = require('../monocle');
 
-// 
+//
 // setup
-// 
+//
 var monocle = null;
 var sample_dir = __dirname + '/sample_files';
 before(function(){ monocle = new Monocle(); });
-
-// 
+after(function() {
+  fs.unlinkSync(__dirname+"/sample_files/creation.txt");
+  fs.unlinkSync(__dirname+"/sample_files/creation2.txt");
+  fs.unlinkSync(__dirname+"/sample_files/nestedDir/creation3.txt");
+});
+//
 // file change tests
-// 
+//
 
 describe("file changes", function() {
 
@@ -41,32 +45,51 @@ describe("file changes", function() {
 
 });
 
-// 
+//
 // file add tests
-// 
+//
 
 describe("file added", function() {
-
   it("should detect a file added", function(complete) {
     monocle.watchDirectory({
       root: sample_dir,
-      directoryFilter: ['!nestedDir'],
       callback: function(f) {
-        if (f.name == "creation.txt") {
-          fs.unlinkSync(__dirname+"/sample_files/creation.txt");
-          monocle.unwatchAll();
-          complete();
-        }
+        cb_helper("creation.txt", f, complete)
       },
-      complete: function() { complete_helper('/sample_files/creation.txt'); }
+      complete: function() {
+        complete_helper('/sample_files/creation.txt');
+      }
     });
   });
-  
+
+  it("should detect another file added", function(complete) {
+    monocle.watchDirectory({
+      root: sample_dir,
+      callback: function(f) {
+        cb_helper("creation2.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation2.txt');
+      }
+    });
+  });
+
+  it("should detect another file added in a nested folder", function(complete) {
+    monocle.watchDirectory({
+      root: sample_dir,
+      callback: function(f) {
+        cb_helper("creation3.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/nestedDir/creation3.txt');
+      }
+    });
+  });
 });
 
-// 
+//
 // helpers
-// 
+//
 
 function cb_helper(name, file, done){
   if (file.name === name) { monocle.unwatchAll(); done(); }
