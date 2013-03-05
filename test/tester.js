@@ -87,6 +87,40 @@ describe("file added", function() {
   });
 });
 
+
+//
+// watch an array of files
+//
+describe("files watched", function() {
+  it("should detect a file changed of multiple", function(complete) {
+    complete_helper('/sample_files/creation.txt');
+    complete_helper('/sample_files/creation2.txt');
+
+    monocle.watchFiles({
+      files: [__dirname+"/sample_files/creation.txt", __dirname+"/sample_files/creation2.txt"],
+      callback: function(f) {
+        cb_helper("creation2.txt", f, complete)
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation2.txt');
+      }
+    });
+  });
+
+  it("should detect a file changed", function(complete) {
+    complete_helper('/sample_files/creation.txt');
+    monocle.watchFiles({
+      files: [__dirname+"/sample_files/creation.txt"],
+      callback: function(f) {
+        cb_helper("creation.txt", f, complete)
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation.txt');
+      }
+    });
+  });
+});
+
 //
 // helpers
 //

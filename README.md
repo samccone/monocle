@@ -13,6 +13,10 @@ Have you ever wanted to watch a folder and all of its files/nested folders for c
 
 ` (new Monocle).watchDirectory(dir, cb, watchSetupComplete, fileFilers, directoryFilters);`
 
+### or watch an array of files
+
+` (new Monocle).watchFiles(files[], cb, watchSetupComplete);`
+
 the callback gets the filename that was modified
 
 ## Filters

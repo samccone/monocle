@@ -8,6 +8,7 @@ module.exports = function() {
   var watched_directories = {};
   var check_dir_pause     = 1000;
   var checkInterval       = undefined;
+
   // @api public
   // Watches the directory passed and its contained files
   // accepts args as an object.
@@ -15,10 +16,9 @@ module.exports = function() {
   // @param root(string): the root directory to watch
   // @param fileFilter(array): ignore these files
   // @param directoryFilter(array): ignore these files
-  // @param callback(fn(file)): on file change even this will be called
+  // @param callback(fn(file)): on file change event this will be called
   // @param complete(fn): on complete of file watching setup
   // @param partial(boolean): if this is true it will only new filers
-
   function watchDirectory(args) {
     readdirp({ root: args.root, fileFiler: args.fileFilter, directoryFilter: args.directoryFilter }, function(err, res) {
       res.files.forEach(function(file) {
@@ -28,6 +28,26 @@ module.exports = function() {
     });
 
     !args.partial && (checkInterval = setInterval(function() {checkDirectory(args)}, check_dir_pause));
+  }
+
+  // @api public
+  // Watches the files passed
+  // accepts args as an object.
+  // @param files(array): a list of files to watch
+  // @param callback(fn(file)): on file change event this will be called
+  // @param complete(fn): on complete of file watching setup
+  function watchFiles(args) {
+    args.files.forEach(function(file) {
+      var o = {
+            fullPath: fs.realpathSync(file),
+            name: fs.realpathSync(file).split('/').pop()
+          };
+      o.fullParentDir = o.fullPath.split('/').slice(0, o.fullPath.split('/').length - 1).join('/')
+
+      watchFile(o, args.callback);
+    });
+
+    typeof args.complete == "function" && args.complete();
   }
 
   function unwatchAll() {
@@ -104,6 +124,7 @@ module.exports = function() {
 
   return {
     watchDirectory: watchDirectory,
+    watchFiles: watchFiles,
     unwatchAll: unwatchAll
   };
 }
