@@ -1,6 +1,5 @@
 var fs          = require('fs');
 var readdirp    = require('readdirp');
-var _           = require('underscore');
 var is_windows  = process.platform === 'win32';
 
 module.exports = function() {
@@ -52,11 +51,11 @@ module.exports = function() {
 
   function unwatchAll() {
     if (is_windows) {
-      _.each(watched_files, function(val, key) {
-        val.close();
+      Object.keys(watched_files).forEach(function(key) {
+        watched_files[key].close();
       });
     } else {
-      _.each(watched_files, function(val, key) {
+      Object.keys(watched_files).forEach(function(key) {
         fs.unwatchFile(key);
       });
     }
@@ -68,7 +67,8 @@ module.exports = function() {
 
   // Checks to see if something in the directory has changed
   function checkDirectory(args) {
-    _.each(watched_directories, function(lastModified, path) {
+    Object.keys(watched_directories).forEach(function(path) {
+      var lastModified = watched_directories[path];
       fs.stat(path, function(err, stats) {
         var stats_stamp = (new Date(stats.mtime)).getTime();
         if (stats_stamp != lastModified) {
