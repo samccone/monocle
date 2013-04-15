@@ -7,8 +7,7 @@
     "test": "test"
   },
   "dependencies": {
-    "readdirp": "~0.2.3",
-    "underscore": "~1.4.4"
+    "readdirp": "~0.2.3"
   },
   "devDependencies": {
     "mocha": "1.8.1"
