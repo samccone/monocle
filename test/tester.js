@@ -22,7 +22,7 @@ describe("file changes", function() {
   it("should detect a change", function(complete) {
     monocle.watchDirectory({
       root: sample_dir,
-      callback: function(f){ cb_helper('foo.txt', f, complete); },
+      listener: function(f){ cb_helper('foo.txt', f, complete); },
       complete: function(){ complete_helper("/sample_files/foo.txt"); }
     });
   });
@@ -30,7 +30,7 @@ describe("file changes", function() {
   it("should detect a change in a nested dir file", function(complete) {
     monocle.watchDirectory({
       root: sample_dir,
-      callback: function(f) { cb_helper('servent.txt', f, complete); },
+      listener: function(f) { cb_helper('servent.txt', f, complete); },
       complete: function() { complete_helper("/sample_files/nestedDir/servent.txt"); }
     });
   });
@@ -38,7 +38,7 @@ describe("file changes", function() {
   it("should detect a change", function(complete) {
     monocle.watchDirectory({
       root: sample_dir,
-      callback: function(f) { cb_helper('longbow.js', f, complete); },
+      listener: function(f) { cb_helper('longbow.js', f, complete); },
       complete: function() { complete_helper('/sample_files/longbow.js'); }
     });
   });
@@ -53,7 +53,7 @@ describe("file added", function() {
   it("should detect a file added", function(complete) {
     monocle.watchDirectory({
       root: sample_dir,
-      callback: function(f) {
+      listener: function(f) {
         cb_helper("creation.txt", f, complete)
       },
       complete: function() {
@@ -65,7 +65,7 @@ describe("file added", function() {
   it("should detect another file added", function(complete) {
     monocle.watchDirectory({
       root: sample_dir,
-      callback: function(f) {
+      listener: function(f) {
         cb_helper("creation2.txt", f, complete);
       },
       complete: function() {
@@ -77,7 +77,7 @@ describe("file added", function() {
   it("should detect another file added in a nested folder", function(complete) {
     monocle.watchDirectory({
       root: sample_dir,
-      callback: function(f) {
+      listener: function(f) {
         cb_helper("creation3.txt", f, complete);
       },
       complete: function() {
@@ -98,7 +98,7 @@ describe("files watched", function() {
 
     monocle.watchFiles({
       files: [__dirname+"/sample_files/creation.txt", __dirname+"/sample_files/creation2.txt"],
-      callback: function(f) {
+      listener: function(f) {
         cb_helper("creation2.txt", f, complete)
       },
       complete: function() {
@@ -111,7 +111,7 @@ describe("files watched", function() {
     complete_helper('/sample_files/creation.txt');
     monocle.watchFiles({
       files: [__dirname+"/sample_files/creation.txt"],
-      callback: function(f) {
+      listener: function(f) {
         cb_helper("creation.txt", f, complete)
       },
       complete: function() {
