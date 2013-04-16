@@ -15,12 +15,12 @@ module.exports = function() {
   // @param root(string): the root directory to watch
   // @param fileFilter(array): ignore these files
   // @param directoryFilter(array): ignore these files
-  // @param callback(fn(file)): on file change event this will be called
+  // @param listener(fn(file)): on file change event this will be called
   // @param complete(fn): on complete of file watching setup
   function watchDirectory(args) {
     readdirp({ root: args.root, fileFiler: args.fileFilter, directoryFilter: args.directoryFilter }, function(err, res) {
       res.files.forEach(function(file) {
-        watchFile(file, args.callback, args.partial);
+        watchFile(file, args.listener, args.partial);
       });
       typeof args.complete == "function" && args.complete();
     });
@@ -32,7 +32,7 @@ module.exports = function() {
   // Watches the files passed
   // accepts args as an object.
   // @param files(array): a list of files to watch
-  // @param callback(fn(file)): on file change event this will be called
+  // @param listener(fn(file)): on file change event this will be called
   // @param complete(fn): on complete of file watching setup
   function watchFiles(args) {
     args.files.forEach(function(file) {
@@ -42,7 +42,7 @@ module.exports = function() {
           };
       o.fullParentDir = o.fullPath.split('/').slice(0, o.fullPath.split('/').length - 1).join('/')
 
-      watchFile(o, args.callback);
+      watchFile(o, args.listener);
     });
 
     typeof args.complete == "function" && args.complete();
@@ -74,7 +74,7 @@ module.exports = function() {
           watched_directories[path] = stats_stamp;
           watchDirectory({
             root: path,
-            callback: args.callback,
+            listener: args.listener,
             fileFilter: args.fileFilter,
             directoryFilter: args.directoryFilter,
             partial: true
@@ -85,7 +85,7 @@ module.exports = function() {
   }
 
   // Watches the file passed and its containing directory
-  // on callback call gives back the file object :)
+  // on change calls given listener with file object
   function watchFile(file, cb, partial) {
     storeDirectory(file);
     if (!watched_files[file.fullPath]) {

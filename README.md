@@ -22,12 +22,12 @@ monocle.watchDirectory({
   root: <root directory>,
   fileFilter: <optional>,
   directoryFilter: <optional>,
-  callback: fn(filename), //triggered on file change
-  complete: <fn(fs.stat+ object)> //file watching all set up
+  listener: fn(fs.stat+ object), //triggered on file change / addition
+  complete: <fn> //file watching all set up
 });
 ```
 
-The callback will recive an object with the following
+The listener will recive an object with the following
 
 ```js
   name: <filename>,
@@ -40,7 +40,7 @@ The callback will recive an object with the following
 
 [fs.stats](http://nodejs.org/api/fs.html#fs_class_fs_stats)
 
-When a new file is added to the directoy it triggers a file change and thus will be passed to your specified callback.
+When a new file is added to the directoy it triggers a file change and thus will be passed to your specified listener.
 
 The two filters are passed through to `readdirp`.  More documentation can be found [here](https://github.com/thlorenz/readdirp#filters)
 
@@ -49,7 +49,7 @@ The two filters are passed through to `readdirp`.  More documentation can be fou
 ```js
 Monocle.watchFiles({
   files: [], //path of file(s)
-  callback: <fn(fs.stat+ object)>, //triggered on file change
+  listener: <fn(fs.stat+ object)>, //triggered on file / addition
   complete: <fn> //file watching all set up
 });
 ```
