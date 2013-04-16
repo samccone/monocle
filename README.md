@@ -23,9 +23,24 @@ monocle.watchDirectory({
   fileFilter: <optional>,
   directoryFilter: <optional>,
   callback: fn(filename), //triggered on file change
-  complete: <fn> //file watching all set up
+  complete: <fn(fs.stat+ object)> //file watching all set up
 });
 ```
+
+The callback will recive an object with the following
+
+```js
+  name: <filename>,
+  path: <filepath-relative>,
+  fullPath: <filepath-absolute>,
+  parentDir: <parentDir-relative>,
+  fullParentDir: <parentDir-absolute>,
+  stat: <see fs.stats>
+```
+
+[fs.stats](http://nodejs.org/api/fs.html#fs_class_fs_stats)
+
+When a new file is added to the directoy it triggers a file change and thus will be passed to your specified callback.
 
 The two filters are passed through to `readdirp`.  More documentation can be found [here](https://github.com/thlorenz/readdirp#filters)
 
@@ -34,7 +49,7 @@ The two filters are passed through to `readdirp`.  More documentation can be fou
 ```js
 Monocle.watchFiles({
   files: [], //path of file(s)
-  callback: <cb(filename)>, //triggered on file change
+  callback: <fn(fs.stat+ object)>, //triggered on file change
   complete: <fn> //file watching all set up
 });
 ```
