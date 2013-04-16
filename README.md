@@ -17,7 +17,7 @@ npm install monocle
 ### Watch a directory:
 
 ```js
-var monocle = require('monocle')()`
+var monocle = require('monocle')()
 monocle.watchDirectory({
   root: <root directory>,
   fileFilter: <optional>,
