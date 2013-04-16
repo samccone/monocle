@@ -17,7 +17,6 @@ module.exports = function() {
   // @param directoryFilter(array): ignore these files
   // @param callback(fn(file)): on file change event this will be called
   // @param complete(fn): on complete of file watching setup
-  // @param partial(boolean): if this is true it will only new filers
   function watchDirectory(args) {
     readdirp({ root: args.root, fileFiler: args.fileFilter, directoryFilter: args.directoryFilter }, function(err, res) {
       res.files.forEach(function(file) {
