@@ -18,7 +18,7 @@ module.exports = function() {
   // @param listener(fn(file)): on file change event this will be called
   // @param complete(fn): on complete of file watching setup
   function watchDirectory(args) {
-    readdirp({ root: args.root, fileFiler: args.fileFilter, directoryFilter: args.directoryFilter }, function(err, res) {
+    readdirp({ root: args.root, fileFilter: args.fileFilter, directoryFilter: args.directoryFilter }, function(err, res) {
       res.files.forEach(function(file) {
         watchFile(file, args.listener, args.partial);
       });
