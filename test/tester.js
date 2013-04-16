@@ -7,7 +7,7 @@ var Monocle = require('../monocle');
 //
 var monocle = null;
 var sample_dir = __dirname + '/sample_files';
-before(function(){ monocle = new Monocle(); });
+before(function(){ monocle = Monocle(); });
 after(function() {
   fs.unlinkSync(__dirname+"/sample_files/creation.txt");
   fs.unlinkSync(__dirname+"/sample_files/creation2.txt");
