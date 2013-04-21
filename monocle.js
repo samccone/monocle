@@ -92,7 +92,7 @@ module.exports = function() {
       if (is_windows) {
         (function() {
           watched_files[file.fullPath] = fs.watch(file.fullPath, function() {
-            cb(file);
+            typeof cb === "function" && cb(file);
           });
           partial && cb(file);
         })(file, cb);
@@ -100,7 +100,7 @@ module.exports = function() {
         (function(file, cb) {
           watched_files[file.fullPath] = true;
           fs.watchFile(file.fullPath, {interval: 150}, function() {
-            cb(file);
+            typeof cb === "function" && cb(file);
           });
           partial && cb(file);
         })(file, cb);

@@ -152,6 +152,19 @@ describe("files watched", function() {
       }
     });
   });
+
+  it("should not bomb when no callback is passed", function(complete) {
+    complete_helper('/sample_files/creation5.txt');
+    monocle.watchFiles({
+      files: [__dirname+"/sample_files/creation5.txt"],
+      complete: function() {
+        complete_helper('/sample_files/creation5.txt');
+      }
+    });
+    setTimeout(function() {
+      complete();
+    }, 300)
+  });
 });
 
 //
