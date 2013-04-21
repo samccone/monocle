@@ -91,21 +91,19 @@ module.exports = function() {
     if (!watched_files[file.fullPath]) {
       if (is_windows) {
         (function() {
-          var _file = file;
-          watched_files[_file.fullPath] = fs.watch(_file.fullPath, function() {
-            cb(_file);
+          watched_files[file.fullPath] = fs.watch(file.fullPath, function() {
+            cb(file);
           });
-          partial && cb(_file);
-        })();
+          partial && cb(file);
+        })(file, cb);
       } else {
-        (function() {
-          var _file = file;
-          watched_files[_file.fullPath] = true;
-          fs.watchFile(_file.fullPath, {interval: 150}, function() {
-            cb(_file);
+        (function(file, cb) {
+          watched_files[file.fullPath] = true;
+          fs.watchFile(file.fullPath, {interval: 150}, function() {
+            cb(file);
           });
-          partial && cb(_file);
-        })();
+          partial && cb(file);
+        })(file, cb);
       }
     }
   }

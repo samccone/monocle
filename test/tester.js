@@ -95,6 +95,7 @@ describe("files watched", function() {
   it("should detect a file changed of multiple", function(complete) {
     complete_helper('/sample_files/creation.txt');
     complete_helper('/sample_files/creation2.txt');
+    complete_helper('/sample_files/creation3.txt');
 
     monocle.watchFiles({
       files: [__dirname+"/sample_files/creation.txt", __dirname+"/sample_files/creation2.txt"],
@@ -103,6 +104,38 @@ describe("files watched", function() {
       },
       complete: function() {
         complete_helper('/sample_files/creation2.txt');
+      }
+    });
+  });
+
+  it("should detect a file changed (delayed)", function(complete) {
+    complete_helper('/sample_files/creation3.txt');
+    monocle.watchFiles({
+      files: [__dirname+"/sample_files/creation3.txt"],
+      listener: function(f) {
+        setTimeout(function() {
+          cb_helper('creation3.txt', f, complete);
+        }, 400);
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation3.txt');
+      }
+    });
+  });
+
+
+
+  it("should detect a file changed (short delayed)", function(complete) {
+    complete_helper('/sample_files/creation4.txt');
+    monocle.watchFiles({
+      files: [__dirname+"/sample_files/creation4.txt"],
+      listener: function(f) {
+        setTimeout(function() {
+          cb_helper('creation4.txt', f, complete);
+        }, 100);
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation4.txt');
       }
     });
   });
