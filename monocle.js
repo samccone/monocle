@@ -1,3 +1,4 @@
+var path        = require('path');
 var fs          = require('fs');
 var readdirp    = require('readdirp');
 var is_windows  = process.platform === 'win32';
@@ -84,9 +85,16 @@ module.exports = function() {
     });
   }
 
+  // sets the absolute path to the file from the current working dir
+  function setAbsolutePath(file) {
+    file.absolutePath = path.resolve(process.cwd(), file.fullPath);
+    return file.absolutePath;
+  }
+
   // Watches the file passed and its containing directory
   // on change calls given listener with file object
   function watchFile(file, cb, partial) {
+    setAbsolutePath(file);
     storeDirectory(file);
     if (!watched_files[file.fullPath]) {
       if (is_windows) {
