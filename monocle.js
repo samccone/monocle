@@ -138,7 +138,7 @@ module.exports = function() {
   // return am object of two arrays
 
   function distinguishPathes(pathes) {
-    if ((typeof pathes) == "string") pathes = [pathes];
+    pathes = Array.isArray(pathes) ? pathes : [pathes];
     var result = {
       directories: [],
       files: []
@@ -169,10 +169,11 @@ module.exports = function() {
   // watch files if the pathes refer to files, or directories
   function watchPathes(args) {
     var result = distinguishPathes(args.path)
-    if (result.directories.length)
+    if (result.directories.length) {
       result.directories.forEach(function(directory) {
         watchDirectory(extend(args, {root: directory}));
       });
+    }
     if (result.files.length)
       watchFiles(extend(args, {files: result.files}));
   }

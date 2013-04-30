@@ -11,6 +11,9 @@ before(function(){ monocle = Monocle(); });
 after(function() {
   fs.unlinkSync(__dirname+"/sample_files/creation.txt");
   fs.unlinkSync(__dirname+"/sample_files/creation2.txt");
+  fs.unlinkSync(__dirname+"/sample_files/creation3.txt");
+  fs.unlinkSync(__dirname+"/sample_files/creation4.txt");
+  fs.unlinkSync(__dirname+"/sample_files/creation5.txt");
   fs.unlinkSync(__dirname+"/sample_files/nestedDir/creation3.txt");
 });
 //
@@ -155,8 +158,6 @@ describe("files watched", function() {
     });
   });
 
-
-
   it("should detect a file changed (short delayed)", function(complete) {
     complete_helper('/sample_files/creation4.txt');
     monocle.watchFiles({
@@ -235,8 +236,6 @@ describe("pathes watched", function() {
     });
   });
 
-
-
   it("should detect a file changed (short delayed)", function(complete) {
     complete_helper('/sample_files/creation4.txt');
     monocle.watchPathes({
@@ -276,6 +275,73 @@ describe("pathes watched", function() {
     setTimeout(function() {
       complete();
     }, 300)
+  });
+});
+
+//
+// watchPathes should be eager to accept string and arrays
+//
+
+describe("different parameters of watchPathes", function() {
+
+  it("may be a file", function(complete) {
+    monocle.watchPathes({
+      path: sample_dir + "/foo.txt",
+      listener: function(f) {
+        cb_helper("foo.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/foo.txt');
+      }
+    });
+  });
+
+  it("may be a string of a directory", function(complete) {
+    monocle.watchPathes({
+      path: sample_dir,
+      listener: function(f) {
+        cb_helper("foo.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/foo.txt');
+      }
+    });
+  });
+
+  it("may be a list of directories", function(complete) {
+    monocle.watchPathes({
+      path: [sample_dir],
+      listener: function(f) {
+        cb_helper("foo.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/foo.txt');
+      }
+    });
+  });
+
+  it("may be a list of directory and file", function(complete) {
+    monocle.watchPathes({
+      path: [sample_dir + "/nestedDir", sample_dir + "/foo.txt"],
+      listener: function(f) {
+        cb_helper("foo.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/foo.txt');
+      }
+    });
+  });
+
+  it("may be a list of file and directory", function(complete) {
+    monocle.watchPathes({
+      path: [sample_dir + "/foo.txt", sample_dir + "/nestedDir"],
+      listener: function(f) {
+        cb_helper("servent.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/nestedDir/servent.txt');
+      }
+    });
   });
 });
 
