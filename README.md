@@ -56,7 +56,7 @@ Monocle.watchFiles({
 
 ### Just watch path
 
-Just an alias of `watchFiles` and `watchDirectory` so you don't need to tell if that's a file or a directory by yourself. Parameter passed to `path`
+Just an alias of `watchFiles` and `watchDirectory` so you don't need to tell if that's a file or a directory by yourself. Parameter passed to `path` can be a `string` or a `array` of `string`.
 
 ```js
 Monocle.watchFiles({
