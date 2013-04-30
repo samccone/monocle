@@ -70,7 +70,10 @@ module.exports = function() {
     Object.keys(watched_directories).forEach(function(path) {
       var lastModified = watched_directories[path];
       fs.stat(path, function(err, stats) {
-        var stats_stamp = (new Date(stats.mtime)).getTime();
+        var stats_stamp = lastModified;
+        if (!err) {
+          stats_stamp = (new Date(stats.mtime)).getTime();
+        }
         if (stats_stamp != lastModified) {
           watched_directories[path] = stats_stamp;
           watchDirectory({
@@ -122,7 +125,11 @@ module.exports = function() {
     var directory = file.fullParentDir;
     if (!watched_directories[directory]) {
       fs.stat(directory, function(err, stats) {
-        watched_directories[directory] = (new Date(stats.mtime)).getTime();
+        if (err) {
+          watched_directories[directory] = (new Date).getTime();
+        } else {
+          watched_directories[directory] = (new Date(stats.mtime)).getTime();
+        }
       });
     }
   }
