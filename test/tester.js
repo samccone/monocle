@@ -43,6 +43,14 @@ describe("file changes", function() {
     });
   });
 
+  it("should detect a change", function(complete) {
+    monocle.watchPathes({
+      path: sample_dir,
+      listener: function(f) { cb_helper('longbow.js', f, complete); },
+      complete: function() { complete_helper('/sample_files/longbow.js'); }
+    });
+  });
+
 });
 
 //
@@ -82,6 +90,30 @@ describe("file added", function() {
       },
       complete: function() {
         complete_helper('/sample_files/nestedDir/creation3.txt');
+      }
+    });
+  });
+
+  it("should detect another file added", function(complete) {
+    monocle.watchPathes({
+      path: sample_dir,
+      listener: function(f) {
+        cb_helper("creation2.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation2.txt');
+      }
+    });
+  });
+
+  it("should detect another file added but passed as list", function(complete) {
+    monocle.watchPathes({
+      path: [sample_dir],
+      listener: function(f) {
+        cb_helper("creation2.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation2.txt');
       }
     });
   });
@@ -166,6 +198,87 @@ describe("files watched", function() {
     }, 300)
   });
 });
+
+
+//
+// watch an array of pathes
+//
+describe("pathes watched", function() {
+  it("should detect a file changed of multiple", function(complete) {
+    complete_helper('/sample_files/creation.txt');
+    complete_helper('/sample_files/creation2.txt');
+    complete_helper('/sample_files/creation3.txt');
+
+    monocle.watchPathes({
+      path: [__dirname+"/sample_files/creation.txt", __dirname+"/sample_files/creation2.txt"],
+      listener: function(f) {
+        cb_helper("creation2.txt", f, complete)
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation2.txt');
+      }
+    });
+  });
+
+  it("should detect a file changed (delayed)", function(complete) {
+    complete_helper('/sample_files/creation3.txt');
+    monocle.watchPathes({
+      path: [__dirname+"/sample_files/creation3.txt"],
+      listener: function(f) {
+        setTimeout(function() {
+          cb_helper('creation3.txt', f, complete);
+        }, 400);
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation3.txt');
+      }
+    });
+  });
+
+
+
+  it("should detect a file changed (short delayed)", function(complete) {
+    complete_helper('/sample_files/creation4.txt');
+    monocle.watchPathes({
+      path: [__dirname+"/sample_files/creation4.txt"],
+      listener: function(f) {
+        setTimeout(function() {
+          cb_helper('creation4.txt', f, complete);
+        }, 100);
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation4.txt');
+      }
+    });
+  });
+
+  it("should detect a file changed", function(complete) {
+    complete_helper('/sample_files/creation.txt');
+    monocle.watchPathes({
+      path: [__dirname+"/sample_files/creation.txt"],
+      listener: function(f) {
+        cb_helper("creation.txt", f, complete)
+      },
+      complete: function() {
+        complete_helper('/sample_files/creation.txt');
+      }
+    });
+  });
+
+  it("should not bomb when no callback is passed", function(complete) {
+    complete_helper('/sample_files/creation5.txt');
+    monocle.watchPathes({
+      path: [__dirname+"/sample_files/creation5.txt"],
+      complete: function() {
+        complete_helper('/sample_files/creation5.txt');
+      }
+    });
+    setTimeout(function() {
+      complete();
+    }, 300)
+  });
+});
+
 
 //
 // helpers

@@ -134,9 +134,47 @@ module.exports = function() {
     }
   }
 
+  function distinguishPathes(pathes) {
+    if ((typeof pathes) == "string") pathes = [pathes];
+    var result = {
+      directories: [],
+      files: []
+    };
+    pathes.forEach(function(name) {
+      if (fs.statSync(name).isDirectory()) {
+        result.directories.push(name);
+      } else {
+        result.files.push(name);
+      }
+    });
+    return result;
+  };
+
+  function extend(prototype, attributes) {
+    var object = {};
+    Object.keys(prototype).forEach(function(key) {
+      object[key] = prototype[key];
+    });
+    Object.keys(attributes).forEach(function(key) {
+      object[key] = attributes[key];
+    });
+    return object;
+  };
+
+  function watchPathes(args) {
+    var result = distinguishPathes(args.path)
+    if (result.directories.length)
+      result.directories.forEach(function(directory) {
+        watchDirectory(extend(args, {root: directory}));
+      });
+    if (result.files.length)
+      watchFiles(extend(args, {files: result.files}));
+  }
+
   return {
     watchDirectory: watchDirectory,
     watchFiles: watchFiles,
+    watchPathes: watchPathes,
     unwatchAll: unwatchAll
   };
 }
