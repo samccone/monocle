@@ -134,6 +134,9 @@ module.exports = function() {
     }
   }
 
+  // distinguish be files and directories
+  // return am object of two arrays
+
   function distinguishPathes(pathes) {
     if ((typeof pathes) == "string") pathes = [pathes];
     var result = {
@@ -150,6 +153,8 @@ module.exports = function() {
     return result;
   };
 
+  // for functions accepts an object as paramter
+  // copy the object and modify with attributes
   function extend(prototype, attributes) {
     var object = {};
     Object.keys(prototype).forEach(function(key) {
@@ -161,6 +166,7 @@ module.exports = function() {
     return object;
   };
 
+  // watch files if the pathes refer to files, or directories
   function watchPathes(args) {
     var result = distinguishPathes(args.path)
     if (result.directories.length)
