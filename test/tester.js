@@ -279,6 +279,74 @@ describe("pathes watched", function() {
   });
 });
 
+//
+// watchPathes should be eager to accept string and arrays
+//
+
+describe("different parameters of watchPathes", function() {
+
+  it("may be a file", function(complete) {
+    monocle.watchPathes({
+      path: sample_dir + "/foo.txt",
+      listener: function(f) {
+        cb_helper("foo.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/foo.txt');
+      }
+    });
+  });
+
+  it("may be a string of a directory", function(complete) {
+    monocle.watchPathes({
+      path: sample_dir,
+      listener: function(f) {
+        cb_helper("foo.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/foo.txt');
+      }
+    });
+  });
+
+  it("may be a list of directories", function(complete) {
+    monocle.watchPathes({
+      path: [sample_dir],
+      listener: function(f) {
+        cb_helper("foo.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/foo.txt');
+      }
+    });
+  });
+
+  it("may be a list of directory and file", function(complete) {
+    monocle.watchPathes({
+      path: [sample_dir + "/nestedDir", sample_dir + "/foo.txt"],
+      listener: function(f) {
+        cb_helper("foo.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/foo.txt');
+      }
+    });
+  });
+
+  it("may be a list of file and directory", function(complete) {
+    monocle.watchPathes({
+      path: [sample_dir + "/nestedDir", sample_dir + "/foo.txt"],
+      listener: function(f) {
+        cb_helper("servent.txt", f, complete);
+      },
+      complete: function() {
+        complete_helper('/sample_files/nestedDir/servent.txt');
+      }
+    });
+  });
+
+});
+
 
 //
 // helpers
