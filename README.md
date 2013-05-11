@@ -62,7 +62,6 @@ Monocle.watchFiles({
   - windows systems use fs.watch
   - osx and linux uses fs.watchFile
 
-
 ## License
 
 BSD
