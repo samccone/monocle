@@ -15,7 +15,13 @@
   "scripts": {
     "test": "mocha test -R spec -t 2000"
   },
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samccone/monocle.git"
+  },
+  "bugs": {
+    "url": "https://github.com/samccone/monocle/issues"
+  },
   "keywords": [
     "watch",
     "filesystem",
