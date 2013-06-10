@@ -1,6 +1,6 @@
 {
   "name": "monocle",
-  "version": "0.1.48",
+  "version": "0.1.50",
   "description": "a tool for watching directories for file changes",
   "main": "monocle.js",
   "directories": {
