@@ -47,11 +47,14 @@ describe("file changes", function() {
   });
 
   it("should detect a change", function(complete) {
-    monocle.watchPaths({
-      path: sample_dir,
-      listener: function(f) { cb_helper('longbow.js', f, complete); },
-      complete: function() { complete_helper('/sample_files/longbow.js'); }
-    });
+    // since we debounce every 1000
+    setTimeout(function() {
+      monocle.watchPaths({
+        path: sample_dir,
+        listener: function(f) { cb_helper('longbow.js', f, complete); },
+        complete: function() { complete_helper('/sample_files/longbow.js'); }
+      });
+    }, 1500);
   });
 
 });
