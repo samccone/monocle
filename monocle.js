@@ -153,7 +153,7 @@ module.exports = function() {
     return result;
   };
 
-  // for functions accepts an object as paramter
+  // for functions accepts an object as parameter
   // copy the object and modify with attributes
   function extend(prototype, attributes) {
     var object = {};
