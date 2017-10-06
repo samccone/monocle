@@ -20,9 +20,21 @@ module.exports = function() {
   // @param complete(fn): on complete of file watching setup
   function watchDirectory(args) {
     readdirp({ root: args.root, fileFilter: args.fileFilter, directoryFilter: args.directoryFilter }, function(err, res) {
-      res.files.forEach(function(file) {
-        watchFile(file, args.listener, args.partial);
-      });
+      if (res.files.length > 0) {
+        res.files.forEach(function (file) {
+          watchFile(file, args.listener, args.partial)
+        })
+      } else {
+        const empty_directories = [{fullParentDir: args.root}]
+        if (res.directories.length > 0) {
+          res.directories.forEach(function (directory) {
+            empty_directories.push({fullParentDir: directory.fullPath})
+          })
+        }
+        empty_directories.forEach(function (directory) {
+          storeDirectory(directory)
+        })
+      }
       typeof args.complete == "function" && args.complete();
     });
 
